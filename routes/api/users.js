@@ -94,4 +94,34 @@ router.patch('/:id', async (req, res) => {
  });
 
 
+
+ /* router.post('/login',async (req,res)=>{
+   try{
+       
+       var query1 = { username: req.body.username };
+       var query2 = { username: req.body.username,password:req.body.password };
+      
+       
+       const User1 =  await user.findOne(query1) ;     
+       if(User1){
+           
+           const User2 =  await user.findOne(query2) ; 
+           if(User2){
+               res.json({message: "sucesso"});
+           }else{
+               
+               res.json({message: "password incorreta"});
+           }
+       }else{
+           res.json({message: "username nao existe"});
+       }
+
+   }catch(err){
+       console.log("what2")
+       res.json({message:err})
+   } 
+
+}); */
+
+
 module.exports = router;

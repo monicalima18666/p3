@@ -15,12 +15,15 @@ const UserSchema = new Schema ({
     
     username: {
         type: String,
-        required: true
+        unique: true,
+        required: true,
+        lowercase:true
     },
 
     password: {
         type: String,
-        required: true
+        required: true,
+        select: true
     },
 
     tipo: {
