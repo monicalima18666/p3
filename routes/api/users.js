@@ -22,6 +22,22 @@ router.get('/', async (req, res) => {
  
  });
 
+ // GET api/users/id
+// Get an users
+
+router.get('/:id', async (req, res) => {
+    
+    try{
+     const user = await Users.findById(req.params.id);
+     if(!user) throw Error('Não existem users');
+     
+     res.status(200).json(user);
+ 
+    }catch(err){
+     res.status(400).json({ msg:err });
+    }
+ 
+ });
  
 
 // POST api/users
@@ -59,5 +75,23 @@ router.delete('/:id', async (req, res) => {
     }
  
  });
+
+ // UPDATE api/users/:id
+// UPDATE an user
+
+router.patch('/:id', async (req, res) => {
+    
+    try{
+     const user = await Users.findByIdAndUpdate(req.params.id, req.body);
+     if(!user) throw Error('Erro a fazer update');
+     
+     res.status(200).json({ sucess:true });
+ 
+    }catch(err){
+     res.status(400).json({ msg:err });
+    }
+ 
+ });
+
 
 module.exports = router;
