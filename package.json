@@ -1,0 +1,27 @@
+{
+  "name": "p3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/monicalima18666/p3.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/monicalima18666/p3/issues"
+  },
+  "homepage": "https://github.com/monicalima18666/p3#readme",
+  "dependencies": {
+    "express": "^4.17.2",
+    "mongoose": "^6.1.8"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
