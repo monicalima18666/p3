@@ -28,6 +28,8 @@ const UserSchema = new Schema ({
 
     tipo: {
         type: String,
+        enum: ['user','admin','gestor'],
+        default: 'user',
         required: true
     },
 });
