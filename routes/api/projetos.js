@@ -5,6 +5,10 @@ const router = express.Router();
 
 const Projetos = require('../../models/Projetos');
 
+const Equipas = require('../../models/Equipas');
+
+const Users = require('../../models/Users');
+
 // GET api/projetos
 // Get all projetos
 
@@ -47,17 +51,92 @@ router.post('/', async (req, res) => {
    const newProjeto = new Projetos(req.body);
 
    try{
-    const projeto = await newProjeto.save();
-    if(!projeto) throw Error('Erro ao salvar o projeto');
     
-    res.status(200).json(projeto);
+      if(req.body.idequipa){
 
-   }catch(err){
+
+         const equipa = await Equipas.findOne({_id:req.body.idequipa});
+
+         if(req.body.idGestor){
+
+            const user = await Users.findOne({_id:req.body.idGestor});
+
+          if(user){
+
+            if(user.tipo === 'gestor'){ 
+
+               if(equipa) {
+                  let projetos = equipa.projetos;
+   
+                  projetos.push(newProjeto._id);
+                  equipa.projetos = projetos;
+                  const e = await equipa.save();
+                  const projeto = await newProjeto.save();
+   
+               }else{
+                  res.status(400).json('Equipa não existe');
+               }
+        
+          }else{
+            res.status(400).json('User não é gestor');
+          }
+
+          } else{
+            res.status(400).json('User não existe');
+          }
+
+         }else{
+
+            if(equipa) {
+               let projetos = equipa.projetos;
+
+               projetos.push(newProjeto._id);
+               equipa.projetos = projetos;
+               const e = await equipa.save();
+               const projeto = await newProjeto.save();
+
+            }else{
+               res.status(400).json('Equipa não existe');
+            }
+     
+         }           
+            
+      }else{
+      
+         if(req.body.idGestor){
+
+            const user = await Users.findOne({_id:req.body.idGestor});
+
+            if(user){
+               if(user.tipo === 'gestor'){
+
+                  const projeto = await newProjeto.save();
+
+               } else{
+                res.status(400).json('User não é gestor');
+               }
+
+            }else{
+            res.status(400).json('User não existe');
+          }
+
+
+         }else{
+
+            const projeto = await newProjeto.save();
+         }
+ 
+      }   
+
+    if(!newProjeto) throw Error('Erro ao salvar o projeto');
+    
+    res.status(200).json(newProjeto);
+
+   } catch(err){
     res.status(400).json({ msg:err });
    }
 
 });
-
 
 // DELETE api/projetos/:id
 // DELETE an projeto
@@ -82,8 +161,28 @@ router.delete('/:id', async (req, res) => {
 router.patch('/:id', async (req, res) => {
     
     try{
-     const projeto = await Projetos.findByIdAndUpdate(req.params.id, req.body);
-     if(!projeto) throw Error('Erro a fazer update');
+       
+      if(req.body.idGestor){
+
+         const user = await Users.findOne({_id:req.body.idGestor});
+
+         if(user){
+            if(user.tipo === 'gestor'){
+
+               const projeto = await Projetos.findByIdAndUpdate(req.params.id, req.body);
+
+            } else{
+             res.status(400).json('User não é gestor');
+            }
+
+         }else{
+         res.status(400).json('User não existe');
+       }
+
+      } else{
+         const projeto = await Projetos.findByIdAndUpdate(req.params.id, req.body);
+      } 
+    
      
      res.status(200).json({ sucess:true });
  

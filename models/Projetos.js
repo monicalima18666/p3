@@ -23,6 +23,12 @@ const ProjetoSchema = new Schema ({
         type: Number,
         required: true
     },
+
+    idGestor: {
+        type: String
+    },
+
+
 });
 
 module.exports = mongoose.model('Projetos', ProjetoSchema);
