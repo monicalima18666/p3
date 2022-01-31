@@ -5,6 +5,8 @@ const router = express.Router();
 
 const Equipas = require('../../models/Equipas');
 
+const Projetos = require('../../models/Projetos');
+
 // GET api/equipas
 // Get all equipas
 
@@ -48,7 +50,7 @@ router.post('/', async (req, res) => {
 
    try{
     const equipa = await newEquipa.save();
-    if(!equipas) throw Error('Erro ao salvar a equipa');
+    if(!equipa) throw Error('Erro ao salvar a equipa');
     
     res.status(200).json(equipa);
 
@@ -82,11 +84,57 @@ router.delete('/:id', async (req, res) => {
 router.patch('/:id', async (req, res) => {
     
     try{
-     const equipa = await Equipas.findByIdAndUpdate(req.params.id, req.body);
-     if(!equipa) throw Error('Erro a fazer update');
-     
-     res.status(200).json({ sucess:true });
- 
+       if(req.body.projeto){
+
+
+         const equipa = await Equipas.findOne({_id: req.params.id});  
+
+         if(equipa){
+            
+            const verficar = await Equipas.findOne({projetos: req.body.projeto});
+         
+            if(!verficar){
+
+               const projeto = await Projetos.findOne({_id: req.body.projeto});
+
+            if(projeto){
+            
+               let projetos = equipa.projetos;
+               projetos.push(req.body.projeto);
+               equipa.projetos = projetos;
+
+               if (req.body.nome) equipa.nome = req.body.nome;
+               if (req.body.contacto) equipa.contacto = req.body.contacto;
+
+               equipa.save();
+
+               const resultado = await Equipas.findOne({_id: req.params.id});
+               res.json(resultado); 
+
+            }else{
+               res.json('Projeto não existe!');
+            }
+
+            }else {
+               res.json('Projeto já existe numa equipa');
+            }
+            
+         }else{
+            res.json('Equipa não existe!');
+         }
+
+
+       }else{
+      
+            const equipa = await Equipas.findByIdAndUpdate(req.params.id, req.body);
+         
+            const resultado = await Equipas.findOne({_id: req.params.id});
+            res.json(resultado); 
+
+        
+         
+       }
+
     }catch(err){
      res.status(400).json({ msg:err });
     }

@@ -68,7 +68,7 @@ router.post('/', async (req, res) => {
                if(equipa) {
                   let projetos = equipa.projetos;
    
-                  projetos.push(newProjeto._id);
+                  projetos.push(newProjeto._id.toString());
                   equipa.projetos = projetos;
                   const e = await equipa.save();
                   const projeto = await newProjeto.save();
@@ -90,7 +90,7 @@ router.post('/', async (req, res) => {
             if(equipa) {
                let projetos = equipa.projetos;
 
-               projetos.push(newProjeto._id);
+               projetos.push(newProjeto._id.toString());
                equipa.projetos = projetos;
                const e = await equipa.save();
                const projeto = await newProjeto.save();
