@@ -102,13 +102,14 @@ router.patch('/:id', async (req, res) => {
             const User1 =  await Users.findOne({ username: req.body.username }) ;
             if(User1){
                 if(User1.password == req.body.password){
-                    res.json(User1.tipo)
+                    // res.json(User1.tipo)
+                    res.json({message: User1.tipo});
                 }else{
                     res.json({message: "password incorreta"});
                 }
     
             }else{
-                res.json("username nao existe")
+                res.json({message: "username nao existe"})
             }
 
         }catch(err){
