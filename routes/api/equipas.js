@@ -106,7 +106,7 @@ router.patch('/:id', async (req, res) => {
                if (req.body.nome) equipa.nome = req.body.nome;
                if (req.body.contacto) equipa.contacto = req.body.contacto;
 
-               equipa.save();
+               const r = await equipa.save();
 
                const resultado = await Equipas.findOne({_id: req.params.id});
                res.json(resultado); 

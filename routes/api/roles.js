@@ -5,6 +5,12 @@ const router = express.Router();
 
 const Roles = require('../../models/Roles');
 
+const Users = require('../../models/Users');
+
+const Equipas = require('../../models/Equipas');
+
+const Projetos = require('../../models/Projetos');
+
 // GET api/roles
 // Get all roles
 
@@ -25,8 +31,8 @@ router.get('/', async (req, res) => {
  // GET api/roles/id
 // Get an role
 
-router.get('/:id', async (req, res) => {
-    
+router.get('/procurarId/:id', async (req, res) => {
+ 
     try{
      const roles = await Roles.findById(req.params.id);
      if(!roles) throw Error('Não existe esse role');
@@ -92,6 +98,123 @@ router.patch('/:id', async (req, res) => {
     }
  
  });
+
+
+
+ // query para devolver apenas elementos da equipa quando se cria um projeto 
+ // ou seja selecionamos no drop down o id da equipa e para selecionar o gestor só pode aparecer os gestores da equipa selecionada 
+
+ router.get('/buscarMembrosEquipaGestor', async (req, res) => {
+    console.log(req.body);
+    
+    try{
+    const roles = await Roles.find({idEquipa: req.body.equipa});
+    console.log(roles);
+    let membros = [];
+
+    for(const role of roles){
+       console.log(role);
+       let membro = await Users.findOne({_id: role.idUtilizador});
+       if(membro.tipo === 'gestor'){
+          membros.push(membro);
+       }  
+    }
+    if(!membros) throw Error('Não existem membros');
+    
+    res.status(200).json(membros);
+
+   }catch(err){
+    res.status(400).json({ msg:err });
+   } 
+
+});
+
+
+
+// project details  selecionar no drop down a equipa  e aparecer todos os membros dela 
+
+router.get('/buscarMembrosEquipa', async (req, res) => {
+    
+   try{
+    const roles = await Roles.find({idEquipa: req.body.equipa});
+
+    let membros = []
+
+    for(const role of roles){
+       let membro = await Users.findOne({_id: role.idUtilizador});
+       membros.push(membro);
+       
+    }
+    if(!membros) throw Error('Não existem membros');
+    
+    res.status(200).json(membros);
+
+   }catch(err){
+    res.status(400).json({ msg:err });
+   }
+
+});
+
+
+// query para devolver os projetos que o user faz parte 
+// ou seja vai aos roles pesquisa pelo id do user vê a equipa a que pertence e vai à equipa buscar o array dos projetos 
+
+
+router.get('/buscarProjetosUser', async (req, res) => {
+    
+   try{
+    const roles = await Roles.find({idUtilizador: req.body.utilizador});
+
+    let projetos = []
+    
+    for(const role of roles){
+       let equipa = await Equipas.findOne({_id: role.idEquipa});
+
+       for (const projeto of equipa.projetos){
+          let proj = await Projetos.findOne({_id:projeto});
+          projetos.push(proj);
+
+       }
+       
+    }
+    if(!projetos) throw Error('Não existem projetos');
+    
+    res.status(200).json(projetos);
+
+   }catch(err){
+    res.status(400).json({ msg:err });
+   }
+
+});
+
+
+// atraves do id do projeto procura pela a equipa associada ao projeto e depois de encontrar a equipa , 
+//vai a tabela roles e procura pelo o id da equipa e devolve todos os utilizadores que estão nessa equipa. 
+
+
+router.get('/buscarMembrosEquipaporProjeto', async (req, res) => {
+    
+   try{
+    const equipa = await Equipas.findOne({projetos: req.body.projeto});
+    const roles = await Roles.find({idEquipa: equipa._id.toString()});
+
+    let membros = []
+
+    for(const role of roles){
+       let membro = await Users.findOne({_id: role.idUtilizador});
+       membros.push(membro);
+       
+    }
+    if(!membros) throw Error('Não existem membros');
+    
+    res.status(200).json(membros);
+
+   }catch(err){
+    res.status(400).json({ msg:err });
+   }
+
+});
+
 
 
 module.exports = router;
