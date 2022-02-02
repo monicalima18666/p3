@@ -103,7 +103,7 @@ router.patch('/:id', async (req, res) => {
             if(User1){
                 if(User1.password == req.body.password){
                     // res.json(User1.tipo)
-                    res.json({message: User1.tipo});
+                    res.json({message: 'sucess' , user :User1.tipo});
                 }else{
                     res.json({message: "password incorreta"});
                 }
