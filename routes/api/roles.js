@@ -179,7 +179,7 @@ router.get('/buscarProjetosUser', async (req, res) => {
     }
     if(!projetos) throw Error('Não existem projetos');
     
-    res.status(200).json(projetos);
+    res.status(200).json(projetos.filter(function (e) {return e != null;}));
 
    }catch(err){
     res.status(400).json({ msg:err });
