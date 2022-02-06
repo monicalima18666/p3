@@ -159,11 +159,39 @@ router.get('/buscarMembrosEquipa', async (req, res) => {
 // query para devolver os projetos que o user faz parte 
 // ou seja vai aos roles pesquisa pelo id do user vê a equipa a que pertence e vai à equipa buscar o array dos projetos 
 
-
+//ID no body
 router.get('/buscarProjetosUser', async (req, res) => {
     
    try{
     const roles = await Roles.find({idUtilizador: req.body.utilizador});
+
+    let projetos = []
+    
+    for(const role of roles){
+       let equipa = await Equipas.findOne({_id: role.idEquipa});
+
+       for (const projeto of equipa.projetos){
+          let proj = await Projetos.findOne({_id:projeto});
+          projetos.push(proj);
+
+       }
+       
+    }
+    if(!projetos) throw Error('Não existem projetos');
+    
+    res.status(200).json(projetos.filter(function (e) {return e != null;}));
+
+   }catch(err){
+    res.status(400).json({ msg:err });
+   }
+
+});
+
+//ID no endpoint
+router.get('/buscarProjetosUser/:id', async (req, res) => {
+    
+   try{
+    const roles = await Roles.find({idUtilizador: req.params.id});
 
     let projetos = []
     
