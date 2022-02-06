@@ -119,4 +119,27 @@ router.patch('/:id', async (req, res) => {
     });
 
 
+    
+router.get('/Gestores/lista', async (req, res) => {
+    
+    try{
+     const users = await Users.find();
+     let User2 = [];
+     if(!users) throw Error('Não existem users');
+     for(const user of users) {
+         if(user.tipo === 'gestor'){
+             User2.push(user);
+
+         }
+     }
+     
+     res.status(200).json(User2);
+ 
+    }catch(err){
+     res.status(400).json({ msg:err });
+    }
+ 
+ });
+
+
 module.exports = router;

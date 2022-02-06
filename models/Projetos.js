@@ -19,7 +19,7 @@ const ProjetoSchema = new Schema ({
         required: true
     },
 
-    budjet: {
+    budget: {
         type: Number,
         required: true
     },

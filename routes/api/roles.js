@@ -104,7 +104,7 @@ router.patch('/:id', async (req, res) => {
  // query para devolver apenas elementos da equipa quando se cria um projeto 
  // ou seja selecionamos no drop down o id da equipa e para selecionar o gestor só pode aparecer os gestores da equipa selecionada 
 
- router.get('/buscarMembrosEquipaGestor', async (req, res) => {
+ router.post('/buscarGestoresPorEquipa', async (req, res) => {
     console.log(req.body);
     
     try{
