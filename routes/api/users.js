@@ -103,13 +103,13 @@ router.patch('/:id', async (req, res) => {
             if(User1){
                 if(User1.password == req.body.password){
                     // res.json(User1.tipo)
-                    res.json({message: 'sucess' , user :User1.tipo});
+                    res.json({message: 'Success' , user :User1.tipo, id_user: User1._id, name: User1.nome});
                 }else{
-                    res.json({message: "password incorreta"});
+                    res.json({message: "Password Incorreta!"});
                 }
     
             }else{
-                res.json({message: "username nao existe"})
+                res.json({message: "Username não existe!"})
             }
 
         }catch(err){
