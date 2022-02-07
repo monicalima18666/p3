@@ -219,11 +219,35 @@ router.get('/buscarProjetosUser/:id', async (req, res) => {
 // atraves do id do projeto procura pela a equipa associada ao projeto e depois de encontrar a equipa , 
 //vai a tabela roles e procura pelo o id da equipa e devolve todos os utilizadores que estão nessa equipa. 
 
-
+//ID no body
 router.get('/buscarMembrosEquipaporProjeto', async (req, res) => {
     
    try{
     const equipa = await Equipas.findOne({projetos: req.body.projeto});
+    const roles = await Roles.find({idEquipa: equipa._id.toString()});
+
+    let membros = []
+
+    for(const role of roles){
+       let membro = await Users.findOne({_id: role.idUtilizador});
+       membros.push(membro);
+       
+    }
+    if(!membros) throw Error('Não existem membros');
+    
+    res.status(200).json(membros);
+
+   }catch(err){
+    res.status(400).json({ msg:err });
+   }
+
+});
+
+//ID no endpoint
+router.get('/buscarMembrosEquipaporProjeto/:id', async (req, res) => {
+    
+   try{
+    const equipa = await Equipas.findOne({projetos: req.params.id});
     const roles = await Roles.find({idEquipa: equipa._id.toString()});
 
     let membros = []
