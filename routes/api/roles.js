@@ -155,6 +155,30 @@ router.get('/buscarMembrosEquipa', async (req, res) => {
 
 });
 
+// project details  selecionar no drop down a equipa  e aparecer todos os membros dela 
+
+router.get('/buscarMembrosEquipa/:idEquipa', async (req, res) => {
+    
+   try{
+    const roles = await Roles.find({idEquipa: req.params.idEquipa});
+
+    let membros = []
+
+    for(const role of roles){
+       let membro = await Users.findOne({_id: role.idUtilizador});
+       membros.push(membro);
+       
+    }
+    if(!membros) throw Error('Não existem membros');
+    
+    res.status(200).json(membros);
+
+   }catch(err){
+    res.status(400).json({ msg:err });
+   }
+
+});
+
 
 // query para devolver os projetos que o user faz parte 
 // ou seja vai aos roles pesquisa pelo id do user vê a equipa a que pertence e vai à equipa buscar o array dos projetos 
