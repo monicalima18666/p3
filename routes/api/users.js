@@ -143,7 +143,7 @@ router.get('/Gestores/lista', async (req, res) => {
 });
 
 router.post('/Users/lista', async (req, res) => {
-    console.log(req.body);
+  
     
     try{
     
