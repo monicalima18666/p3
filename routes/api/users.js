@@ -5,6 +5,8 @@ const router = express.Router();
 
 const Users = require('../../models/Users');
 
+const Roles = require('../../models/Roles');
+
 // GET api/users
 // Get all users
 
@@ -140,15 +142,21 @@ router.get('/Gestores/lista', async (req, res) => {
  
 });
 
-router.get('/Users/lista', async (req, res) => {
+router.post('/Users/lista', async (req, res) => {
+    console.log(req.body);
     
     try{
+    
         const users = await Users.find();
         let User2 = [];
         if(!users) throw Error('Não existem users');
         for(const user of users) {
             if(user.tipo === 'gestor' || user.tipo === 'user'){
+                const role = await Roles.findOne({idEquipa: req.body.idEquipa , idUtilizador: user._id})
+                if(!role){
                 User2.push(user);
+                }
+               
             }
         }
      
